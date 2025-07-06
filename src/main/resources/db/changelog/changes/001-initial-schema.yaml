@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: edik
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  type: varchar(100)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+              - column:
+                  name: username
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password_hash
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
