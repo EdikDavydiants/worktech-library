@@ -1,8 +1,6 @@
 package org.task.worktech_library.model.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
@@ -13,7 +11,6 @@ import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.task.worktech_library.enums.GenreName;
 
 import java.util.HashSet;
 import java.util.Set;
