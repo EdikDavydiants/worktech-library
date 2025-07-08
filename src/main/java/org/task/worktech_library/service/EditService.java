@@ -1,6 +1,7 @@
 package org.task.worktech_library.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.task.worktech_library.exception.NotFoundException;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static org.task.worktech_library.util.StringMessages.BOOK_NOT_FOUND;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EditService {
@@ -50,6 +52,7 @@ public class EditService {
 
             bookRepository.save(newBook);
         }
+        log.info("Книга добавлена");
     }
 
     private Optional<Book> findEquivalentBook(BookDto bookDto) {
@@ -106,19 +109,26 @@ public class EditService {
 
     public void deleteBook(UUID id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(BOOK_NOT_FOUND));
+                .orElseThrow(() -> {
+                    log.error("Книга не найдена с id {}", id);
+                    return new NotFoundException(BOOK_NOT_FOUND);
+                });
         if(book.getQuantity() == 1) {
             bookRepository.deleteById(id);
         } else {
             book.setQuantity(book.getQuantity() - 1);
             bookRepository.save(book);
+            log.info("Книга удалена с id {}", id);
         }
     }
 
     @Transactional
     public void updateBook(UUID id, BookDto bookDto) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(BOOK_NOT_FOUND));
+                .orElseThrow(() -> {
+                    log.error("Книга не найдена с id {}", id);
+                    return new NotFoundException(BOOK_NOT_FOUND);
+                });
 
         book.setTitle(bookDto.title());
         book.setPageCount(bookDto.pageCount());
@@ -134,5 +144,6 @@ public class EditService {
         book.setGenres(updatedGenres);
 
         bookRepository.save(book);
+        log.info("Книга обновлена с id {}", id);
     }
 }
