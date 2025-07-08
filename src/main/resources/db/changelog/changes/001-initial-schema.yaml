@@ -164,3 +164,11 @@ databaseChangeLog:
             constraintName: fk_books_genres_genre
             onDelete: CASCADE
             onUpdate: CASCADE
+  - changeSet:
+      id: 4.1
+      author: edik
+      changes:
+        - addAutoIncrement:
+            tableName: genres
+            columnName: id
+            columnDataType: serial

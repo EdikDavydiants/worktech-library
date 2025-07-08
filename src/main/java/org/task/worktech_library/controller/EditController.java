@@ -1,6 +1,7 @@
 package org.task.worktech_library.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,13 +17,13 @@ public interface EditController {
 
     @PostMapping("/add")
     @Operation(summary = "Добавить новую книгу.")
-    String addBook(@RequestBody BookDto bookDto);
+    ResponseEntity<BookDto> addBook(@RequestBody BookDto bookDto);
 
     @DeleteMapping("/delete/{id}")
     @Operation(summary = "Удалить книгу по id.")
-    String deleteBook(@PathVariable UUID id);
+    ResponseEntity<Void> deleteBook(@PathVariable UUID id);
 
     @PatchMapping("/update/{id}")
     @Operation(summary = "Обновить данные книги по id.")
-    String updateBook(@PathVariable UUID id, @RequestBody BookDto bookDto);
+    ResponseEntity<BookDto> updateBook(@PathVariable UUID id, @RequestBody BookDto bookDto);
 }
