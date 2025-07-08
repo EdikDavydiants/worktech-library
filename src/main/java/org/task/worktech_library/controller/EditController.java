@@ -17,7 +17,7 @@ public interface EditController {
 
     @PostMapping("/add")
     @Operation(summary = "Добавить новую книгу.")
-    ResponseEntity<BookDto> addBook(@RequestBody BookDto bookDto);
+    ResponseEntity<Void> addBook(@RequestBody BookDto bookDto);
 
     @DeleteMapping("/delete/{id}")
     @Operation(summary = "Удалить книгу по id.")

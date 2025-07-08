@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static org.task.worktech_library.util.StringMessages.BOOK_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 public class EditService {
@@ -76,7 +78,7 @@ public class EditService {
 
     public void deleteBook(UUID id) {
         if(!bookRepository.existsById(id)) {
-            throw new RuntimeException("Book not found");
+            throw new RuntimeException(BOOK_NOT_FOUND);
         }
         bookRepository.deleteById(id);
     }
