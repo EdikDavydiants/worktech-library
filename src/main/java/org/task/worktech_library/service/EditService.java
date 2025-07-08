@@ -15,6 +15,7 @@ import org.task.worktech_library.repository.GenreRepository;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,16 +32,44 @@ public class EditService {
 
     @Transactional
     public void addBook(BookDto bookDto) {
-        Book book = BookMapper.mapBookDtoToBook(bookDto);
+        Optional<Book> existingBook = findEquivalentBook(bookDto);
 
-        Set<Author> authors = processAuthors(bookDto.authors(), book);
-        Set<Genre> genres = processGenres(bookDto.genres(), book);
+        if (existingBook.isPresent()) {
+            Book book = existingBook.get();
+            book.setQuantity(book.getQuantity() + 1);
+            bookRepository.save(book);
+        } else {
+            Book newBook = BookMapper.mapBookDtoToBook(bookDto);
 
-        book.setAuthors(authors);
-        book.setGenres(genres);
-        book.setQuantity(1);
+            Set<Author> authors = processAuthors(bookDto.authors(), newBook);
+            Set<Genre> genres = processGenres(bookDto.genres(), newBook);
 
-        bookRepository.save(book);
+            newBook.setAuthors(authors);
+            newBook.setGenres(genres);
+            newBook.setQuantity(1);
+
+            bookRepository.save(newBook);
+        }
+    }
+
+    private Optional<Book> findEquivalentBook(BookDto bookDto) {
+        List<Book> booksWithSameTitle = bookRepository.findByTitle(bookDto.title());
+
+        return booksWithSameTitle.stream()
+                .filter(book -> {
+                    Set<String> bookAuthors = book.getAuthors().stream()
+                            .map(Author::getName)
+                            .collect(Collectors.toSet());
+                    boolean authorsMatch = new HashSet<>(bookDto.authors()).equals(bookAuthors);
+
+                    Set<String> bookGenres = book.getGenres().stream()
+                            .map(Genre::getName)
+                            .collect(Collectors.toSet());
+                    boolean genresMatch = new HashSet<>(bookDto.genres()).equals(bookGenres);
+
+                    return authorsMatch && genresMatch;
+                })
+                .findFirst();
     }
 
     public Set<Author> processAuthors(List<String> authorNames, Book book) {
@@ -80,5 +109,26 @@ public class EditService {
             throw new NotFoundException(BOOK_NOT_FOUND);
         }
         bookRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void updateBook(UUID id, BookDto bookDto) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(BOOK_NOT_FOUND));
+
+        book.setTitle(bookDto.title());
+        book.setPageCount(bookDto.pageCount());
+
+        book.getAuthors().forEach(author -> author.getBooks().remove(book));
+        book.getAuthors().clear();
+        book.getGenres().forEach(genre -> genre.getBooks().remove(book));
+        book.getGenres().clear();
+
+        Set<Author> updatedAuthors = processAuthors(bookDto.authors(), book);
+        book.setAuthors(updatedAuthors);
+        Set<Genre> updatedGenres = processGenres(bookDto.genres(), book);
+        book.setGenres(updatedGenres);
+
+        bookRepository.save(book);
     }
 }

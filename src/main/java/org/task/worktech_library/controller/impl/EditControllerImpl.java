@@ -30,7 +30,7 @@ public class EditControllerImpl implements EditController {
 
     @Override
     public ResponseEntity<Void> updateBook(UUID id, BookDto bookDto) {
-
-        return null;
+        editService.updateBook(id, bookDto);
+        return ResponseEntity.noContent().build();
     }
 }
