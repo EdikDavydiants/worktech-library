@@ -7,8 +7,6 @@ import org.task.worktech_library.model.entity.Genre;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class BookMapper {
 

@@ -61,24 +61,4 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private Set<Genre> genres = new HashSet<>();
-
-    public void addAuthor(Author author) {
-        authors.add(author);
-        author.getBooks().add(this);
-    }
-
-    public void removeAuthor(Author author) {
-        authors.remove(author);
-        author.getBooks().remove(this);
-    }
-
-    public void addGenre(Genre genre) {
-        genres.add(genre);
-        genre.getBooks().add(this);
-    }
-
-    public void removeGenre(Genre genre) {
-        genres.remove(genre);
-        genre.getBooks().remove(this);
-    }
 }
