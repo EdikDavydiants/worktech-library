@@ -1,6 +1,7 @@
 package org.task.worktech_library.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.task.worktech_library.exception.AlreadyExistsException;
@@ -10,6 +11,7 @@ import org.task.worktech_library.repository.UserRepository;
 
 import static org.task.worktech_library.util.StringMessages.USER_ALREADY_EXISTS;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -28,5 +30,6 @@ public class UserService {
         user.setPasswordHash(passwordEncoder.encode(registrationDto.getPassword()));
 
         userRepository.save(user);
+        log.info("User {} registered", registrationDto.getUsername());
     }
 }
