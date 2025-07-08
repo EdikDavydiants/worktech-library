@@ -2,8 +2,8 @@ package org.task.worktech_library.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.task.worktech_library.exception.NotFoundException;
 import org.task.worktech_library.mapper.BookMapper;
 import org.task.worktech_library.model.dto.BookDto;
 import org.task.worktech_library.model.entity.Author;
@@ -15,7 +15,6 @@ import org.task.worktech_library.repository.GenreRepository;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -41,7 +40,7 @@ public class EditService {
         book.setGenres(genres);
         book.setQuantity(1);
 
-        bookRepository.saveAndFlush(book);
+        bookRepository.save(book);
     }
 
     public Set<Author> processAuthors(List<String> authorNames, Book book) {
@@ -78,7 +77,7 @@ public class EditService {
 
     public void deleteBook(UUID id) {
         if(!bookRepository.existsById(id)) {
-            throw new RuntimeException(BOOK_NOT_FOUND);
+            throw new NotFoundException(BOOK_NOT_FOUND);
         }
         bookRepository.deleteById(id);
     }

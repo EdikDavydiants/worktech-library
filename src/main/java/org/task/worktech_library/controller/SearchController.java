@@ -1,6 +1,8 @@
 package org.task.worktech_library.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,8 +16,12 @@ import org.task.worktech_library.model.dto.BookDto;
 @RequestMapping("/book/search")
 public interface SearchController {
 
+    @Operation(summary = "Search book by title, author and genre.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500", description = "Internal server error!")
+    })
     @GetMapping
-    @Operation(summary = "Поиск по названию, автору и жанру.")
     ResponseEntity<Page<BookDto>> searchBooks(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String author,

@@ -29,7 +29,7 @@ public class EditControllerImpl implements EditController {
     }
 
     @Override
-    public ResponseEntity<BookDto> updateBook(UUID id, BookDto bookDto) {
+    public ResponseEntity<Void> updateBook(UUID id, BookDto bookDto) {
 
         return null;
     }
