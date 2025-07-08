@@ -72,7 +72,7 @@ public class EditService {
                 .findFirst();
     }
 
-    public Set<Author> processAuthors(List<String> authorNames, Book book) {
+    private Set<Author> processAuthors(List<String> authorNames, Book book) {
         return authorNames.stream()
                 .map(authorName -> {
                     Author author = authorRepository.findByName(authorName)
@@ -88,7 +88,7 @@ public class EditService {
                 .collect(Collectors.toSet());
     }
 
-    public Set<Genre> processGenres(List<String> genreNames, Book book) {
+    private Set<Genre> processGenres(List<String> genreNames, Book book) {
         return genreNames.stream()
                 .map(genreName -> {
                     Genre genre = genreRepository.findByName(genreName)
@@ -105,10 +105,14 @@ public class EditService {
     }
 
     public void deleteBook(UUID id) {
-        if(!bookRepository.existsById(id)) {
-            throw new NotFoundException(BOOK_NOT_FOUND);
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(BOOK_NOT_FOUND));
+        if(book.getQuantity() == 1) {
+            bookRepository.deleteById(id);
+        } else {
+            book.setQuantity(book.getQuantity() - 1);
+            bookRepository.save(book);
         }
-        bookRepository.deleteById(id);
     }
 
     @Transactional
